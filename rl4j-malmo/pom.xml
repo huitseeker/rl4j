@@ -1,0 +1,35 @@
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <parent>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>rl4j</artifactId>
+    <version>0.7.3-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>rl4j-malmo</artifactId>
+  <packaging>jar</packaging>
+
+  <name>rl4j-malmo</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <malmo.version>0.19.0</malmo.version>
+    <malmo.home>${env.MALMO_HOME}</malmo.home>
+  </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>rl4j-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+		<groupId>com.microsoft.msr</groupId>
+		<artifactId>MalmoJavaJar</artifactId>
+		<version>${malmo.version}</version>
+		<scope>system</scope>
+		<systemPath>${malmo.home}/Java_Examples/MalmoJavaJar.jar</systemPath>
+        </dependency>
+    </dependencies>
+</project>

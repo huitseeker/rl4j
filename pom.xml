@@ -10,6 +10,7 @@
         <module>rl4j-core</module>
         <module>rl4j-gym</module>
         <module>rl4j-doom</module>
+        <module>rl4j-malmo</module>
     </modules>
     <packaging>pom</packaging>
 
