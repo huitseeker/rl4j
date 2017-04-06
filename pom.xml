@@ -148,6 +148,7 @@
                   <directory>rl4j-core</directory>
                   <directory>rl4j-gym</directory>
                   <directory>rl4j-doom</directory>
+                  <directory>rl4j-malmo</directory>
                 </directories>
               </configuration>
             </plugin>
