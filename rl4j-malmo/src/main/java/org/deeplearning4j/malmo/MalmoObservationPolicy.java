@@ -7,7 +7,6 @@ import com.microsoft.msr.malmo.WorldState;
  * Used by MalmoEnv to ensure next observation is in a consistent state
  * @author howard-abrams (howard.abrams@ca.com) on 1/12/17.
  */
-interface MalmoObservationPolicy
-{
-	boolean isObservationConsistant( WorldState world_state, WorldState original_world_state );
+interface MalmoObservationPolicy {
+    boolean isObservationConsistant(WorldState world_state, WorldState original_world_state);
 }

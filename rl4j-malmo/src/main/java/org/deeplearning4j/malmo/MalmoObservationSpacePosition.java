@@ -12,48 +12,43 @@ import com.microsoft.msr.malmo.WorldState;
  * Basic observation space that contains just the X,Y,Z location triplet
  * @author howard-abrams (howard.abrams@ca.com) on 1/12/17.
  */
-public class MalmoObservationSpacePosition extends MalmoObservationSpace
-{
-	@Override
-	public String getName()
-	{
-		return "Box(3,)";
-	}
+public class MalmoObservationSpacePosition extends MalmoObservationSpace {
+    @Override
+    public String getName() {
+        return "Box(3,)";
+    }
 
-	@Override
-	public int[] getShape()
-	{
-		return new int[]{ 3 };
-	}
+    @Override
+    public int[] getShape() {
+        return new int[] {3};
+    }
 
-	@Override
-	public INDArray getLow()
-	{
-		INDArray low = Nd4j.create( new float[] { Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE });
-		return low;
-	}
+    @Override
+    public INDArray getLow() {
+        INDArray low = Nd4j.create(new float[] {Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE});
+        return low;
+    }
 
-	@Override
-	public INDArray getHigh()
-	{
-		INDArray high = Nd4j.create( new float[] { Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE } );
-		return high;
-	}
+    @Override
+    public INDArray getHigh() {
+        INDArray high = Nd4j.create(new float[] {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE});
+        return high;
+    }
 
-	public MalmoBox getObservation( WorldState world_state )
-	{
-		TimestampedStringVector observations = world_state.getObservations();
+    public MalmoBox getObservation(WorldState world_state) {
+        TimestampedStringVector observations = world_state.getObservations();
 
-		if ( observations.isEmpty() ) return null;
+        if (observations.isEmpty())
+            return null;
 
-        String obs_text = observations.get( (int) (observations.size() - 1) ).getText();
+        String obs_text = observations.get((int) (observations.size() - 1)).getText();
 
-		JSONObject observation = new JSONObject( obs_text );
+        JSONObject observation = new JSONObject(obs_text);
 
-		double xpos = observation.getDouble("XPos");
-		double ypos = observation.getDouble("YPos");
-		double zpos = observation.getDouble("ZPos");
+        double xpos = observation.getDouble("XPos");
+        double ypos = observation.getDouble("YPos");
+        double zpos = observation.getDouble("ZPos");
 
-        return new MalmoBox( xpos, ypos, zpos );
-	}
+        return new MalmoBox(xpos, ypos, zpos);
+    }
 }

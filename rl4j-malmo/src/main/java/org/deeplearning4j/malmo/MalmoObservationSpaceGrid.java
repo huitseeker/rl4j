@@ -15,115 +15,103 @@ import com.microsoft.msr.malmo.WorldState;
  * Observation space that contains a grid of Minecraft blocks
  * @author howard-abrams (howard.abrams@ca.com) on 1/12/17.
  */
-public class MalmoObservationSpaceGrid extends MalmoObservationSpace
-{
-	static final int MAX_BLOCK = 4095;
+public class MalmoObservationSpaceGrid extends MalmoObservationSpace {
+    static final int MAX_BLOCK = 4095;
 
-	int size;
-	String name;
+    int size;
+    String name;
 
-	int totalSize;
+    int totalSize;
 
-	HashMap<String,Integer> blockMap = new HashMap<String,Integer>();
+    HashMap<String, Integer> blockMap = new HashMap<String, Integer>();
 
-	/**
-	 * Construct observation space from a array of blocks policy should distinguish between.
-	 *
-	 * @param name Name given to Grid element in mission specification
-	 * @param xSize total x size of grid
-	 * @param ySize total y size of grid
-	 * @param zSize total z size of grid
-	 * @param blocks Array of block names to distinguish between. Supports combination of individual strings and/or arrays of strings to map multiple block types to a single observation value. If not specified, it will dynamically map block names to integers - however, because these will be mapped as they are seen, different missions may have different mappings!
-	 */
-	public MalmoObservationSpaceGrid( String name, int xSize, int ySize, int zSize, Object... blocks )
-	{
-		this.name = name;
+    /**
+     * Construct observation space from a array of blocks policy should distinguish between.
+     *
+     * @param name Name given to Grid element in mission specification
+     * @param xSize total x size of grid
+     * @param ySize total y size of grid
+     * @param zSize total z size of grid
+     * @param blocks Array of block names to distinguish between. Supports combination of individual strings and/or arrays of strings to map multiple block types to a single observation value. If not specified, it will dynamically map block names to integers - however, because these will be mapped as they are seen, different missions may have different mappings!
+     */
+    public MalmoObservationSpaceGrid(String name, int xSize, int ySize, int zSize, Object... blocks) {
+        this.name = name;
 
-		this.totalSize = xSize * ySize * zSize;
+        this.totalSize = xSize * ySize * zSize;
 
-		if ( blocks.length == 0 )
-		{
-			this.size = MAX_BLOCK;
-		}
-		else
-		{
-			this.size = blocks.length;
+        if (blocks.length == 0) {
+            this.size = MAX_BLOCK;
+        } else {
+            this.size = blocks.length;
 
-			// Mapping is 1-based;  0 == all other types
-			for( int i = 0; i < blocks.length; ++i )
-			{
-				if ( blocks[i] instanceof String )
-					blockMap.put( (String)blocks[i], i+1 );
-				else
-					for( String block : (String[])blocks[i] )
-						blockMap.put( block, i+1 );
-			}
-		}
-	}
+            // Mapping is 1-based;  0 == all other types
+            for (int i = 0; i < blocks.length; ++i) {
+                if (blocks[i] instanceof String)
+                    blockMap.put((String) blocks[i], i + 1);
+                else
+                    for (String block : (String[]) blocks[i])
+                        blockMap.put(block, i + 1);
+            }
+        }
+    }
 
-	@Override
-	public String getName()
-	{
-		return "Box("+totalSize+")";
-	}
+    @Override
+    public String getName() {
+        return "Box(" + totalSize + ")";
+    }
 
-	@Override
-	public int[] getShape()
-	{
-		return new int[] { totalSize };
-	}
+    @Override
+    public int[] getShape() {
+        return new int[] {totalSize};
+    }
 
-	@Override
-	public INDArray getLow()
-	{
-		//TODO: Try just returning Nd4j.create( getShape() );
-		INDArray low = Nd4j.create( getShape() );
+    @Override
+    public INDArray getLow() {
+        //TODO: Try just returning Nd4j.create( getShape() );
+        INDArray low = Nd4j.create(getShape());
 
-		for( int i = 0; i < totalSize; ++i )
-			low.putScalar( i, 0 );
+        for (int i = 0; i < totalSize; ++i)
+            low.putScalar(i, 0);
 
-		return low;
-	}
+        return low;
+    }
 
-	@Override
-	public INDArray getHigh()
-	{
-		//TODO: Try using return Nd4j.linspace( size, size, totalSize );
-		INDArray high = Nd4j.create( getShape() );
+    @Override
+    public INDArray getHigh() {
+        //TODO: Try using return Nd4j.linspace( size, size, totalSize );
+        INDArray high = Nd4j.create(getShape());
 
-		for( int i = 0; i < totalSize; ++i )
-			high.putScalar( i, size );
+        for (int i = 0; i < totalSize; ++i)
+            high.putScalar(i, size);
 
-		return high;
-	}
+        return high;
+    }
 
-	public MalmoBox getObservation( WorldState world_state )
-	{
-		TimestampedStringVector observations = world_state.getObservations();
+    public MalmoBox getObservation(WorldState world_state) {
+        TimestampedStringVector observations = world_state.getObservations();
 
-		if ( observations.isEmpty() ) return null;
+        if (observations.isEmpty())
+            return null;
 
-		String obs_text = observations.get( (int) (observations.size() - 1) ).getText();
+        String obs_text = observations.get((int) (observations.size() - 1)).getText();
 
-		JSONObject observation = new JSONObject( obs_text );
-		JSONArray blocks = observation.getJSONArray( name );
+        JSONObject observation = new JSONObject(obs_text);
+        JSONArray blocks = observation.getJSONArray(name);
 
-	double blockTypes[] = new double[totalSize];
+        double blockTypes[] = new double[totalSize];
 
-	for( int i = 0; i < totalSize; ++i )
-	{
-		String block = blocks.getString( i );
-		Integer mapped = blockMap.get( block );
+        for (int i = 0; i < totalSize; ++i) {
+            String block = blocks.getString(i);
+            Integer mapped = blockMap.get(block);
 
-		if ( size == MAX_BLOCK && mapped == null )
-		{
-			mapped = blockMap.size();
-			blockMap.put( block, mapped );
-		}
+            if (size == MAX_BLOCK && mapped == null) {
+                mapped = blockMap.size();
+                blockMap.put(block, mapped);
+            }
 
-		blockTypes[i] = mapped == null ? 0 : mapped;
-	}
+            blockTypes[i] = mapped == null ? 0 : mapped;
+        }
 
-        return new MalmoBox( blockTypes );
-	}
+        return new MalmoBox(blockTypes);
+    }
 }
